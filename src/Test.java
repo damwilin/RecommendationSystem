@@ -6,7 +6,11 @@ import java.util.ArrayList;
 public class Test {
     public static void main (String[]args) {
         FirstRatings firstRatings = new FirstRatings();
-        firstRatings.testLoadMovies();
+        //firstRatings.testLoadMovies();
+        //firstRatings.testLoadRaters();
+        MovieRunnerAverage movieRunnerAverage = new MovieRunnerAverage();
+        movieRunnerAverage.printAverageRatings(20);
+        //movieRunnerAverage.getAverageRatingOneMovie("Vacation");
 
     }
 }
