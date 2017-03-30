@@ -17,7 +17,6 @@ public class ThirdRatings {
     }
 
 
-
     public int getRaterSize() {
         return myEfficientRaters.size();
     }
@@ -50,12 +49,12 @@ public class ThirdRatings {
         return moviesWithAverageRatings;
     }
 
-    public ArrayList<Rating> getAverageRatingsByFilter(int minimalRaters, IFilter filterCriteria){
+    public ArrayList<Rating> getAverageRatingsByFilter(int minimalRaters, IFilter filterCriteria) {
         ArrayList<String> moviesWithFilter = MovieDatabase.filterBy(filterCriteria);
         ArrayList<Rating> moviesWithAverageRatings = new ArrayList<Rating>();
-        for (String id : moviesWithFilter){
+        for (String id : moviesWithFilter) {
             double averageRating = getAverageByID(id, minimalRaters);
-            if (averageRating > 0.00){
+            if (averageRating > 0.00) {
                 Rating rating = new Rating(id, averageRating);
                 moviesWithAverageRatings.add(rating);
             }
@@ -63,8 +62,6 @@ public class ThirdRatings {
 
         return moviesWithAverageRatings;
     }
-
-
 
 
 }

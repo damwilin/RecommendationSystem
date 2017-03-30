@@ -21,6 +21,10 @@
  * Write a description of SecondRatings here.
  * @author (your name)
  * @version (a version number or a date)
+ * <p>
+ * Write a description of SecondRatings here.
+ * @author (your name)
+ * @version (a version number or a date)
  */
 
 /**
@@ -103,8 +107,8 @@ public class SecondRatings {
         return "ID was not found";
     }
 
-    public String getID(String title){
-        for (Movie movie: myMovies){
+    public String getID(String title) {
+        for (Movie movie : myMovies) {
             if (movie.getTitle().equals(title))
                 return movie.getID();
         }

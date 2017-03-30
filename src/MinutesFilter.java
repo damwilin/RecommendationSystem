@@ -12,6 +12,6 @@ public class MinutesFilter implements IFilter {
 
     @Override
     public boolean satisfies(String id) {
-        return MovieDatabase.getMinutes(id) >=minMinutes && MovieDatabase.getMinutes(id) <=maxMinutes;
+        return MovieDatabase.getMinutes(id) >= minMinutes && MovieDatabase.getMinutes(id) <= maxMinutes;
     }
 }
