@@ -5,54 +5,43 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Damian on 3/28/2017.
  */
 public class FirstRatings {
-    private ArrayList<Movie> movieArrayList;
-    private ArrayList<Rater> raterArrayList;
 
-    public ArrayList<Movie> getMovieArrayList() {
+
+    public ArrayList<Movie> loadMovies(String filename) {
+        ArrayList<Movie> movieArrayList = new ArrayList<Movie>();
+        Iterable<CSVRecord> records = loadFile(filename);
+        for (CSVRecord record : records) {
+            Movie movie = new Movie(record.get("id"), record.get("title"), record.get("year"), record.get("genre"), record.get("director"), record.get("country"), record.get("poster"), Integer.parseInt(record.get("minutes")));
+            movieArrayList.add(movie);
+        }
         return movieArrayList;
     }
 
-    public ArrayList<Rater> getRaterArrayList() {
-        return raterArrayList;
-    }
-
-    public FirstRatings() {
-        movieArrayList = new ArrayList<Movie>();
-        raterArrayList = new ArrayList<Rater>();
-    }
-
-    public void loadMovies(String filename) {
-        try {
-            Reader in = new FileReader("data/" + filename);
-            Iterable<CSVRecord> records = CSVFormat.EXCEL.withHeader().parse(in);
-            for (CSVRecord record : records) {
-                Movie movie = new Movie(record.get("id"), record.get("title"), record.get("year"), record.get("genre"), record.get("director"), record.get("country"), record.get("poster"), Integer.parseInt(record.get("minutes")));
-                movieArrayList.add(movie);
-            }
-        } catch (IOException e) {
-            System.out.println("Reading file error: " + filename);
-        }
-    }
-
-    public void loadRaters(String filename) {
+    public ArrayList<EfficientRater> loadRaters(String filename) {
+        ArrayList<EfficientRater> efficientRaterList = new ArrayList<EfficientRater>();
         Iterable<CSVRecord> records = loadFile(filename);
         for (CSVRecord record : records) {
-            Rater rater = new Rater(record.get("rater_id"));
-            int numberOfRater = numberOfRaterInArrayList(rater);
+            EfficientRater efficientRater = new EfficientRater(record.get("rater_id"));
+            int numberOfRater = -1;
+            for (int i = 0; i < efficientRaterList.size(); i++) {
+                if (efficientRaterList.get(i).getID().equals(efficientRater.getID()))
+                    numberOfRater = i;
+            }
             if (numberOfRater == -1) {
-                rater.addRating(record.get("movie_id"), Double.parseDouble(record.get("rating")));
-                raterArrayList.add(rater);
+                efficientRater.addRating(record.get("movie_id"), Double.parseDouble(record.get("rating")));
+                //mozna usunac ta linijke, chyba i else
+                efficientRaterList.add(efficientRater);
             } else
-                raterArrayList.get(numberOfRater).addRating(record.get("movie_id"), Double.parseDouble(record.get("rating")));
-        }
-    }
+                efficientRaterList.get(numberOfRater).addRating(record.get("movie_id"), Double.parseDouble(record.get("rating")));
 
+        }
+        return efficientRaterList;
+    }
 
     private Iterable<CSVRecord> loadFile(String filename) {
         Iterable<CSVRecord> records = null;
@@ -65,15 +54,7 @@ public class FirstRatings {
         return records;
     }
 
-    private int numberOfRaterInArrayList(Rater rater) {
-        String raterId = rater.getID();
-        for (int i = 0; i < raterArrayList.size(); i++) {
-            if (raterArrayList.get(i).getID().equals(rater.getID()))
-                return i;
-        }
-        return -1;
-    }
-
+/*
     public void testLoadMovies() {
         int homManyComediesMovie = 0;
         int howManyLongMovies = 0;
@@ -110,17 +91,17 @@ public class FirstRatings {
 
     public void testLoadRaters() {
         loadRaters("ratings.csv");
-        int numberOfRaters = raterArrayList.size();
+        int numberOfRaters = efficientRaterList.size();
         System.out.println("Number of raters : " + "\t" + numberOfRaters + "\n");
 
-        for (Rater currentRater : raterArrayList) {
-            String id = currentRater.getID();
-            System.out.println("Rater id: " + "\t" + id);
-            int numberOfRatings = currentRater.numRatings();
+        for (EfficientRater currentEfficientRater : efficientRaterList) {
+            String id = currentEfficientRater.getID();
+            System.out.println("PlainIRater id: " + "\t" + id);
+            int numberOfRatings = currentEfficientRater.numRatings();
             System.out.println("Number of ratings" + "\t" + numberOfRatings);
-            ArrayList<String> itemsRated = currentRater.getItemsRated();
+            ArrayList<String> itemsRated = currentEfficientRater.getItemsRated();
             for (String item : itemsRated) {
-                System.out.println(item + "\t" + currentRater.getRating(item));
+                System.out.println(item + "\t" + currentEfficientRater.getRating(item));
             }
             System.out.println("\n");
         }
@@ -131,29 +112,29 @@ public class FirstRatings {
         String movieTitle = "1798709";
         int howManyWithMovieTitle = 0;
         ArrayList<String> moviesRated = new ArrayList<String>();
-        for (Rater rater : raterArrayList) {
-            if (rater.numRatings() > maxSizeRatings)
-                maxSizeRatings = rater.numRatings();
+        for (EfficientRater currentEfficientRater : efficientRaterList) {
+            if (currentEfficientRater.numRatings() > maxSizeRatings)
+                maxSizeRatings = currentEfficientRater.numRatings();
 
-            if (rater.hasRating(movieTitle))
+            if (currentEfficientRater.hasRating(movieTitle))
                 howManyWithMovieTitle++;
 
-            if (rater.getID().equals(selectedRater))
-                System.out.println("Rater with number " + selectedRater + " has " + rater.numRatings() + " ratings");
+            if (currentEfficientRater.getID().equals(selectedRater))
+                System.out.println("PlainIRater with number " + selectedRater + " has " + currentEfficientRater.numRatings() + " ratings");
 
-            for (String currentTitle : rater.getItemsRated()) {
+            for (String currentTitle : currentEfficientRater.getItemsRated()) {
                 if (!moviesRated.contains(currentTitle))
                     moviesRated.add(currentTitle);
             }
         }
         System.out.println("\nMaximum number of ratings: " + maxSizeRatings + "\n" + "Raters with this value: ");
-        for (Rater rater : raterArrayList) {
-            if (rater.numRatings() == maxSizeRatings)
-                System.out.println(rater.getID());
+        for (EfficientRater currentEfficientRater : efficientRaterList) {
+            if (currentEfficientRater.numRatings() == maxSizeRatings)
+                System.out.println(currentEfficientRater.getID());
         }
         System.out.println("Movie: " + movieTitle + " was rated by " + howManyWithMovieTitle);
         System.out.println("There is " + moviesRated.size() + " movies rated");
     }
-
+*/
 }
 

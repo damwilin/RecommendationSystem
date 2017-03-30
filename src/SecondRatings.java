@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 public class SecondRatings {
     private ArrayList<Movie> myMovies;
-    private ArrayList<Rater> myRaters;
+    private ArrayList<EfficientRater> myEfficientRaters;
 
     public SecondRatings() {
         // default constructor
@@ -43,10 +43,8 @@ public class SecondRatings {
 
     public SecondRatings(String movieFile, String ratingsFile) {
         FirstRatings firstRatings = new FirstRatings();
-        firstRatings.loadMovies(movieFile);
-        firstRatings.loadRaters(ratingsFile);
-        myMovies = firstRatings.getMovieArrayList();
-        myRaters = firstRatings.getRaterArrayList();
+        myMovies = firstRatings.loadMovies(movieFile);
+        myEfficientRaters = firstRatings.loadRaters(ratingsFile);
     }
 
     public int getMovieSize() {
@@ -54,14 +52,14 @@ public class SecondRatings {
     }
 
     public int getRaterSize() {
-        return myRaters.size();
+        return myEfficientRaters.size();
     }
 
     private double getAverageByID(String movieID, int minimalRaters) {
         int numberOfRatings = 0;
         double sumOfRatings = 0;
-        for (Rater currentRater : myRaters) {
-            double rating = currentRater.getRating(movieID);
+        for (EfficientRater currentEfficientRater : myEfficientRaters) {
+            double rating = currentEfficientRater.getRating(movieID);
             if (rating != -1) {
                 numberOfRatings++;
                 sumOfRatings += rating;
@@ -75,8 +73,8 @@ public class SecondRatings {
     public double getAverageByID(String movieID) {
         int numberOfRatings = 0;
         double sumOfRatings = 0;
-        for (Rater currentRater : myRaters) {
-            double rating = currentRater.getRating(movieID);
+        for (EfficientRater currentEfficientRater : myEfficientRaters) {
+            double rating = currentEfficientRater.getRating(movieID);
             if (rating != -1) {
                 numberOfRatings++;
                 sumOfRatings += rating;
