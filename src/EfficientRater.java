@@ -41,8 +41,8 @@ public class EfficientRater implements IRater {
 
     public ArrayList<String> getItemsRated() {
         ArrayList<String> list = new ArrayList<String>();
-        for (int k = 0; k < myRatings.size(); k++) {
-            list.add(myRatings.get(k).getItem());
+        for (String key : myRatings.keySet()) {
+            list.add(key);
         }
 
         return list;
